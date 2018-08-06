@@ -125,13 +125,18 @@ app.post('/newTrans',urlencodedparser,(req,res)=>{
 })
 
 app.get('/recenttransactions',(req,res)=>{
-    let result = myCoin.getLatestBlock();
-    res.json(result);
+ let result = myCoin.pendingTransactions;
+ res.json(result);
 })
 
 app.post('/mineblock',urlencodedparser,(req,res)=>{
     myCoin.minePendingTransactions(req.body.mineraddress)
         res.json('Successfully mined new block!\nRewarded 0.001 Coins')
+})
+
+app.get('/minedblocks',(req,res)=>{
+    let result = myCoin.getLatestBlock();
+    res.json(result);
 })
 
 app.get('/mybalance',(req,res)=>{

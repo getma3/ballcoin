@@ -33,11 +33,20 @@
       setInterval(function(){
       $.ajax({
           method:'GET',
-          url:'localhost:3000/recenttransactions',
+          url:'ballcoin.herokuapp.com/recenttransactions',
           dataType:'json'
       }).done(function(data){
           $('#transactions').append('<p>'+data+'</p>')
       })
-    },1000000);
+    },1000);
+    setInterval(function(){
+      $.ajax({
+          method:'GET',
+          url:'ballcoin.herokuapp.com/minedblocks',
+          dataType:'json'
+      }).done(function(data){
+          $('#block').append('<p>'+data+'</p>')
+      })
+    },1000);
   </script>
 </html>
