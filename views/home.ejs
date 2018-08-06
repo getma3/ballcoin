@@ -1,0 +1,43 @@
+<html>
+    <style>
+    *{
+        text-align: center;
+    }
+    </style>
+    <h1>You have reached the root</h1>
+ 
+        <p>new Transaction</p>
+        <form method='POST' action='/newTrans'>
+            <input type="text" name='from' placeholder='sender address'/>
+            <input type="text" to='to' placeholder='reciever address'/>
+            <input type="text" name='amount' placeholder="amount"/>
+            <input type='submit'/>
+        </form>
+        <p>Mine block</p>
+        <form method='POST' action='/mineblock'>
+            <input type="text" name='mineraddress' placeholder=' your address..'/>
+            <input type='submit' value='mine'/>
+        </form>
+        <p>Recent transactions</p>
+        <ul id='transactions'>
+        </ul>
+        <p>Recent blocks mined</p>
+        <ul id='blocks'>
+            </ul>
+
+    <script
+  src="https://code.jquery.com/jquery-3.3.1.min.js"
+  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous"></script>
+  <script>
+      setInterval(function(){
+      $.ajax({
+          method:'GET',
+          url:'localhost:3000/recenttransactions',
+          dataType:'json'
+      }).done(function(data){
+          $('#transactions').append('<p>'+data+'</p>')
+      })
+    },1000000);
+  </script>
+</html>
