@@ -11,12 +11,12 @@
             <input type="text" name='from' placeholder='sender address'/>
             <input type="text" to='to' placeholder='reciever address'/>
             <input type="text" name='amount' placeholder="amount"/>
-            <input type='submit'/>
+            <input id ='transpost' type='submit'/>
         </form>
         <p>Mine block</p>
         <form method='POST' action='/mineblock'>
             <input type="text" name='mineraddress' placeholder=' your address..'/>
-            <input type='submit' value='mine'/>
+            <input type='submit' id ='minepost' value='mine'/>
         </form>
         <p>Recent transactions</p>
         <ul id='transactions'>
@@ -33,7 +33,7 @@
       setInterval(function(){
       $.ajax({
           method:'GET',
-          url:'ballcoin.herokuapp.com/recenttransactions',
+          url:'http://ballcoin.herokuapp.com/recenttransactions',
           dataType:'json'
       }).done(function(data){
           $('#transactions').append('<p>'+data+'</p>')
@@ -42,7 +42,7 @@
     setInterval(function(){
       $.ajax({
           method:'GET',
-          url:'ballcoin.herokuapp.com/minedblocks',
+          url:'http://ballcoin.herokuapp.com/minedblocks',
           dataType:'json'
       }).done(function(data){
           $('#block').append('<p>'+data+'</p>')
