@@ -1,14 +1,8 @@
-const SHA256 = require("crypto-js/sha256");
 const express = require("express");
 const ejs = require('ejs');
 const bodyParser = require("body-parser");
 const urlencodedparser = bodyParser.urlencoded({extended:false});
-
-
-const app = express();
-const port = process.env.PORT || 3000;
-
-app.set('view engine','ejs');
+const SHA256 = require("crypto-js/sha256");
 
 class Transaction{
     constructor(fromAddress,toAddress,amount){
@@ -48,7 +42,7 @@ class BlockChain{
         this.chain=[this.createGenesisBlock()];
         this.difficulty = 4;
         this.pendingTransactions = [];
-        this.miningReward = 0.001;
+        this.miningReward = 0.1;
     }
 
     createGenesisBlock(){
@@ -105,48 +99,59 @@ class BlockChain{
 var myCoin = new BlockChain();
 myCoin.createGenesisBlock();
 
+setInterval(function(){
+    myCoin.createTransaction(new Transaction(
+        'qpokksacjdo',
+        '90iewjodsaf',
+        3.450
+    ))
+    myCoin.createTransaction(new Transaction(
+        'lkj920wposd',
+        '0921jkASLKS',
+        10.4
+    ))
+    myCoin.createTransaction(new Transaction(
+        'iwns9230idj',
+        'podkfjiwqep',
+        0.0034
+    ))
+    myCoin.createTransaction(new Transaction(
+        'lkj920wposd',
+        '0921jkASLKS',
+        10.4
+    ))
+},1000)
+
+const app = express();
+const port = process.env.PORT || 3000;
+
+app.set('view engine', 'ejs');
+
 app.listen(port,()=>{
-    console.log(`listening to requests on port ${port}`)
+    console.log(`listening to requests on port ${port}`);
 })
 
 app.get('/',(req,res)=>{
-    res.render('home');
+    res.render('index');
 })
 
-app.post('/newTrans',urlencodedparser,(req,res)=>{
-    myCoin.createTransaction(
-        new Transaction(
-            req.body.from,
-            req.body.to,
-            req.body.amount
-        )
-    )
-    res.json('successfully created a new Transaction')
+app.get('/getbalance',(req,res)=>{
+    res.json(myCoin.getBalanceofAddress(req.query.address))
 })
 
-app.get('/recenttransactions',(req,res)=>{
- let result = myCoin.pendingTransactions;
- res.json(result);
+app.get('/miner',(req,res)=>{
+    res.render('miner');
 })
 
-app.post('/mineblock',urlencodedparser,(req,res)=>{
-    myCoin.minePendingTransactions(req.body.mineraddress)
-        res.json('Successfully mined new block!\nRewarded 0.001 Coins')
+app.post('/mine',urlencodedparser,(req,res)=>{
+    let minerAddress = req.body.address;
+    myCoin.minePendingTransactions(minerAddress);
+    res.json('success');
 })
 
-app.get('/minedblocks',(req,res)=>{
-    let result = myCoin.getLatestBlock();
-    res.json(result);
+app.get('/latestblock',(req,res)=>{
+    res.json(myCoin.getLatestBlock())
 })
-
-app.get('/mybalance',(req,res)=>{
-    let balance = myCoin.getBalanceofAddress(req.query.mineraddress)
-    res.json('miner: '+req.query.mineraddress+' balance = '+balance)
-})
-
-
-
-
 
 
 

@@ -1,0 +1,64 @@
+<html>
+    <head>
+        <title>Mining</title>
+    </head>
+    <style>
+    body{
+        padding:2em;
+    }
+    </style>
+    <body>
+    <form id='miner' method="POST" action="/mine">
+        <input id='address' type ="text" name ="address"/>
+        <input type = "submit" value="start mining"/>
+    </form>
+    <h3>My balance:<span id='balance'>0</span> coins </h3>
+
+    <h3>Latest Blocks</h3>
+    <ul id='latestblocks'>
+
+    </ul>
+    <script
+        src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous">
+    </script>
+    <script>
+        var bal= 0;
+        $('#miner').submit(function(e){
+            var ee =e;
+            ee.preventDefault();
+            setInterval(function(){
+                
+            let address = $('#address').val()
+            let url = '/mine';
+            
+            $.post(url,{address:address}).done(function(data){
+            })
+            $.ajax({
+                method:'GET',
+                url:'/getbalance?address='+address,
+                dataType:'json'
+            }).done(function(data){
+                document.getElementById('balance').innerHTML=data;
+            })
+            $.ajax({
+                method:'GET',
+                url:'/latestblock',
+                dataType:'json'
+            }).done(function(data){
+                document.getElementById('latestblocks').innerHTML=`
+               <li>
+                    <p>Previous Hash:${data.prevHash}</p>
+                    <p>Hash:${data.hash}</p>
+                    <p>timestamp:${data.timestamp}</p>
+                </li>
+
+                `
+                ;
+            })
+         },2000)
+        })
+    </script>
+    </body>
+</html>
