@@ -1,0 +1,30 @@
+<html>
+    <head>
+        <title>
+            My Transactions
+        </title>
+        <link href="/assets/styles/style.css" rel="stylesheet" type="text/css"/>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
+    </head>
+    <body>
+        <div class="nav-bar">
+            <ul>
+                <a href="/profile"><li>My Profile</li></a>
+                <a href="/api/chainview"><li>Blockchain</li></a>
+                <a href="/auth/logout"><li>Log out</li></a>
+            </ul>
+            <h3>My Transactions</h3>
+            <p><%=user.username%></p>
+        </div>
+            <div id="myTrans">
+                
+            </div>
+            
+            <input id="user-id" type="text" value="<%=user._id%>" style="display: none"/>
+        <script
+        src="https://code.jquery.com/jquery-3.3.1.js"
+        integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+        crossorigin="anonymous"></script>
+        <script src="/assets/scripts/userTransactions.js"></script>
+    </body>
+</html>

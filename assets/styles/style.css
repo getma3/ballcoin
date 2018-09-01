@@ -1,0 +1,111 @@
+   *{
+        font-family: sans-serif;
+        padding:0;
+        margin: 0;
+        box-sizing: border-box;
+    }
+    a{
+        text-decoration: none;
+    }
+    body{
+        background: rgba(0,0,0,0.3);
+    }
+    form input{
+        width: 300px;
+        height: 3em;
+        line-height: 3em;
+        display:block;
+        margin: 0.7em auto;
+        padding: 10px;
+    }
+    form label{
+        font-size: 0.8em;
+        position: relative;
+        top:43px;
+        
+    }
+    form {
+        padding: 15px;
+        background: #fff;
+        width: 400px;
+        margin: 2em auto;
+    }
+    .new-block{
+        overflow: hidden;
+        padding: 15px;
+        background: #fff;
+        width: 80%;
+        max-width: 700px;
+        margin: 0.7em auto; 
+    }
+    .new-block p{
+        display: inline-block;
+        font-size: 0.9em;
+        padding: 3px;
+    }
+    .new-block h3{
+        font-size: 1em;
+        text-decoration: underline;
+        margin: 5px;
+    }
+
+    .fa-link{
+        text-align: center;
+        transform: rotate(-45deg);
+        display: block;
+        color:#fff;
+        font-size: 2em;
+    }
+
+    .nav-bar{
+        height: 3em;
+        background: #fff;
+    }
+        .nav-bar ul{
+            list-style: none;
+            display: absolute;
+            background: #fff;
+            float: right;
+            padding: 20px;
+            height: 100px;
+            margin-top: 1em;
+        }
+        .nav-bar li{
+            display: absolute;
+            margin: 1em 0em;
+        }
+        .nav-bar h3{
+            line-height: 3em;
+            padding-left:15px; 
+            width: 200px;
+            display: inline-block;
+        }
+        .nav-bar p{
+            float: right;
+            margin-right: 50px;
+            line-height: 3.6em;
+        }
+    #myTrans{
+        position: absolute;
+        border:solid 3px rgba(255,255,255,0.3);
+        height: 500px;
+        overflow-y: scroll;
+        width: 80%;
+        max-width: 800px;
+        margin:3em 20%;
+    }
+
+    .fa-check-circle{
+        margin: 10px;
+        float: right;
+        position: relative;
+        font-size: 1.5em;
+        color:rgba(0,0,0,0.4);
+        transition:all ease-out .3s;
+    }
+
+    .fa-check-circle:hover{
+        transition:all linear .3s;
+        color:rgb(0, 148, 86);
+        transform: scale(.97);
+    }

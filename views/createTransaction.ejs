@@ -1,0 +1,37 @@
+<html>
+    <head>
+        <title>
+            New Transaction
+        </title>
+        <link href="/assets/styles/style.css" rel="stylesheet" type="text/css"/>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
+    </head>
+    <body>
+        <div class="nav-bar">
+            <!-- <ul>
+                <li>Home</li>
+                <li>New Transaction</li>
+                <li>Log out</li>
+            </ul> -->
+            <h3>New Transaction</h3>
+            <p><%=user.username%></p>
+        </div>
+        <form method="POST" action="/" class="newTransaction-form">
+            <input id="trans-code" type="text" name="code" placeholder="cheque number/mpesa code..."/>
+            <input id="from" type="text" name="from" placeholder="Sender's ID number..."/>
+            <input id="to" type="text" name="to" placeholder="Recepient..."/>
+            <input id="amount" type="number" name="amount" placeholder="Amount..."/>
+            <input type="submit" value="Create Transaction"/>
+        </form>
+        <div style="text-align: center; color:green" class="new-block">
+           
+        </div>
+
+        
+        <script
+        src="https://code.jquery.com/jquery-3.3.1.js"
+        integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+        crossorigin="anonymous"></script>
+        <script src="/assets/scripts/newTransaction.js"></script>
+    </body>
+</html>

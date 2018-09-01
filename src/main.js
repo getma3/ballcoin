@@ -1,133 +1,47 @@
 const express = require("express");
 const ejs = require('ejs');
-const bodyParser = require("body-parser");
-const urlencodedparser = bodyParser.urlencoded({extended:false});
-const SHA256 = require("crypto-js/sha256");
-
-class Transaction{
-    constructor(fromAddress,toAddress,amount){
-        this.fromAddress = fromAddress;
-        this.toAddress = toAddress;
-        this.amount = amount;
-    }
-
-}
-
-// Block
-class Block {
-    constructor(timestamp,transactions,prevHash=''){
-        this.timestamp = timestamp;
-        this.transactions = transactions;
-        this.prevHash = prevHash;
-        this.nonce = 0;
-        this.hash = this.calculateHash();
-    }
-
-    calculateHash(){
-        return SHA256(this.index+this.prevHash+this.timestamp+JSON.stringify(this.data)+this.nonce).toString();
-    }
-    mineBlock(difficulty){
-        while(this.hash.substring(0,difficulty) !== Array(difficulty+1).join("0")){
-            this.nonce++;  7
-            this.hash = this.calculateHash();
-        }
-        console.log('new block mined: '+this.hash);
-    }
-
-}
-
-// Block Chain
-class BlockChain{
-    constructor(){
-        this.chain=[this.createGenesisBlock()];
-        this.difficulty = 5;
-        this.pendingTransactions = [];
-        this.miningReward = 0.1;
-    }
-
-    createGenesisBlock(){
-        return new Block(Date.now(),["Genesis block"],"0");
-    }
-
-    getLatestBlock(){
-        return this.chain[this.chain.length - 1];
-    }
-        
-    createTransaction(transaction){
-        this.pendingTransactions.push(transaction)
-    }
-
-    minePendingTransactions(minerRewardAddress){
-        let block = new Block(Date.now(),this.pendingTransactions);
-        block.prevHash = this.getLatestBlock().hash;
-        block.mineBlock(this.difficulty);
-        this.chain.push(block);
-        this.pendingTransactions = [
-            new Transaction(null,minerRewardAddress,this.miningReward)
-        ]
-    }
-
-    getBalanceofAddress(address){
-        let balance = 0;
-        for(const block of this.chain){
-            for(const trans of block.transactions){
-                if(trans.fromAddress == address){
-                    balance-=trans.amount; 5
-                }
-                if(trans.toAddress == address){
-                    balance += trans.amount;
-                }
-            }
-        }
-        return balance;
-    }
- 
-    isChainValid(){
-        for(let i = 1; i < this.chain.length;i++){
-            const CurrentBlock = this.chain[i];
-            const PrevBlock = this.chain[i-1];
-
-            if(CurrentBlock.hash !== CurrentBlock.calculateHash()){
-                return false
-            }
-        }
-        return true;
-    }
-}
-
-
-var myCoin = new BlockChain();
-myCoin.createGenesisBlock();
-
-setInterval(function(){
-    myCoin.createTransaction(new Transaction(
-        'qpokksacjdo',
-        '90iewjodsaf',
-        3.450
-    ))
-    myCoin.createTransaction(new Transaction(
-        'lkj920wposd',
-        '0921jkASLKS',
-        10.4
-    ))
-    myCoin.createTransaction(new Transaction(
-        'iwns9230idj',
-        'podkfjiwqep',
-        0.0034
-    ))
-    myCoin.createTransaction(new Transaction(
-        'lkj920wposd',
-        '0921jkASLKS',
-        10.4
-    ))
-},1000)
-
 const app = express();
+const keys = require("../config/keys");
+const passport = require("passport");
+const passportSetup = require('../config/passport-setup');
+const cookieSession =require("cookie-session");
+const secure = require("express-force-https");
 const port = process.env.PORT || 3000;
+const BlockChain = require('./blockchain.js')
+const mongoose = require('mongoose');
+const socket = require('socket.io');
 
+const User = require('../models/user');
+const BlockChain_Routes = require('../routes/blockchain_routes')
+const AUTH_routes = require("../routes/auth_routes");
+const Profile_routes = require('../routes/profile_routes');
+
+
+mongoose.connect('mongodb://admin:node3000@ds125352.mlab.com:25352/jamiiblockchain');
+mongoose.connection.once('open',()=>{
+    console.log('successful connection to  database')
+}).on('error',(err)=>{
+    console.log('failed to connect to database\n',err);
+}).catch(err=>{
+    console.log(err);
+})
+
+app.use(cookieSession({
+    maxAge:3*60*60*1000,
+    keys:[keys.session.key]
+}));
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(secure);
+
+app.use('/auth',AUTH_routes);
+app.use('/api',BlockChain_Routes);
+app.use('/profile',Profile_routes);
+
+app.use('/assets',express.static('assets'));
 app.set('view engine', 'ejs');
 
-app.listen(port,()=>{
+const server = app.listen(port,()=>{
     console.log(`listening to requests on port ${port}`);
 })
 
@@ -135,23 +49,41 @@ app.get('/',(req,res)=>{
     res.render('index');
 })
 
-app.get('/getbalance',(req,res)=>{
-    res.json(myCoin.getBalanceofAddress(req.query.address))
+
+const io = socket(server);
+
+io.on('connection',(socket)=>{
+    console.log('new peer online')
+
+    socket.on('newTransaction',()=>{
+
+      console.log("new Block Transaction :\n")
+     
+    })
+
+    socket.on('newblock',()=>{
+    //    on new block mined
+    console.log(BlockChain.getLatestBlock());
+    User.update({},{$push:{
+                chain:{
+                    from:BlockChain.getLatestBlock().transactions[0].fromAddress,
+                    to:BlockChain.getLatestBlock().transactions[0].toAddress,
+                    amount:BlockChain.getLatestBlock().transactions[0].amount,
+                 // amount:BlockChain.getLatestBlock().transactions.validators,
+                    code:BlockChain.getLatestBlock().transactions[0].code,
+                    prevHash:BlockChain.getLatestBlock().prevHash,
+                    hash:BlockChain.getLatestBlock().hash,
+                    nonce:BlockChain.getLatestBlock().nonce,
+                    timestamp:BlockChain.getLatestBlock().timestamp
+                }}
+            },{multi:true}).then(()=>{
+                console.log('new block has been broadcasted to all users');
+            })
+            
+        })
 })
 
-app.get('/miner',(req,res)=>{
-    res.render('miner');
-})
-
-app.post('/mine',urlencodedparser,(req,res)=>{
-    let minerAddress = req.body.address;
-    myCoin.minePendingTransactions(minerAddress);
-    res.json('success');
-})
-
-app.get('/latestblock',(req,res)=>{
-    res.json(myCoin.getLatestBlock())
-})
+module.export = io;
 
 
 
@@ -161,5 +93,18 @@ app.get('/latestblock',(req,res)=>{
 
 
 
-
-
+    // on new block mined
+   // User.update({},{$push:{
+        //     chain:{
+        //         from:BlockChain.getLatestBlock().transactions[0].fromAddress,
+        //         to:BlockChain.getLatestBlock().transactions[0].toAddress,
+        //         amount:BlockChain.getLatestBlock().transactions[0].amount,
+        //         code:BlockChain.getLatestBlock().transactions[0].code,
+        //         prevHash:BlockChain.getLatestBlock().prevHash,
+        //         hash:BlockChain.getLatestBlock().hash,
+        //         nonce:BlockChain.getLatestBlock().nonce,
+        //         timestamp:BlockChain.getLatestBlock().timestamp
+        //     }}
+        // },{multi:true}).then(()=>{
+        //     console.log('new block has been broadcasted to all users');
+        // })

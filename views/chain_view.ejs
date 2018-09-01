@@ -1,0 +1,44 @@
+<html>
+    <head>
+        <title>
+            The Blockchain
+        </title>
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+        <link href="/assets/styles/style.css" rel="stylesheet" type="text/css"/>
+    </head>
+    <body>
+            <div class="nav-bar">
+                    <ul>
+                        <a href="/profile"><li>My Profile</li></a>
+                        <a href="/auth/logout"><li>Log out</li></a>
+                    </ul>
+                </div>
+        <h1 style="text-align: center;color:#fff;margin:1.5em;">Blockchain Height: <%=chain.length%></h1>
+       <%chain.reverse()%>
+        <%chain.forEach(function(data){%>
+        <div class="new-block">
+            <div style="text-align: center; color:#fff; background: rgba(0,0,0,0.5)">
+            <p><strong>From:</strong></p>
+            <p><%=data.from%></p>
+            <p><strong>To: </strong></p>
+            <p><%=data.to%></p>
+            <p><strong>Amount: </strong></p>
+            <p><%=data.amount%></p>
+            </div>
+            <br>
+            <p><strong>PrevHash: </strong></p>
+            <p><%=data.prevHash%></p>
+            <br>
+            <p><strong>Hash: </strong></p>
+            <p><%=data.hash%></p>
+            <br>
+            <p><strong>Date: </strong></p> 
+            <p><%=new Date(data.timestamp)%></p>
+        </div>
+        <i class="fas fa-link"></i>
+       <%})%>
+       <div style="text-align: center;" class="new-block">
+            <p >. . . . . .</p> 
+        </div>
+    </body>
+</html>

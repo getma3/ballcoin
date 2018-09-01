@@ -1,0 +1,35 @@
+<html>
+    <head>
+        <title>
+            My Profile
+        </title>
+        <link href="/assets/styles/style.css" rel="stylesheet" type="text/css"/>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
+    </head>
+    <body>
+        <div class="nav-bar">
+            <ul>
+                <a href="profile/usertransactions"><li>My Transactions</li></a>
+                <a href="api/chainview"><li>Blockchain</li></a>
+                <a href="auth/logout"><li>Log out</li></a>
+            </ul>
+            <h3>My profile</h3>
+            <p><%=user.username%></p>
+        </div>
+        
+            <form method="POST" action="/profile/updateprofile" class="updateprofile-form">
+                <p style="text-align: center;text-decoration: underline;">Account Details:</p>
+                <label>National ID:</label><input id="national_id" style="width: 180px; border:none;border-bottom:solid 2px rgba(0,0,0,0.5)"value="<%=user.NationalID%>" type="text" name="National ID"/>
+                <input style="display:none;" type="text" value="<%=user._id%>" id="user-id"/>
+                <label>Gate Number:</label><input id="gateNumber" value="<%=user.gateNumber%>" style="width: 180px; border:none;border-bottom:solid 2px rgba(0,0,0,0.5)" type="number" name="gateNumber" />
+                <label>Email Address:</label><input id="email" value="<%=user.email%>" style="width: 180px;  border:none;border-bottom:solid 2px rgba(0,0,0,0.5)" type="email" name="email"/>
+                <input  style="width: 180px;" type="submit" value="Update Profile"/>
+            </form>
+
+        <script
+        src="https://code.jquery.com/jquery-3.3.1.js"
+        integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+        crossorigin="anonymous"></script>
+        <script src="/assets/scripts/updateProfile.js"></script>
+    </body>
+</html>
